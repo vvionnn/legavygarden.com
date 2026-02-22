@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}Settings | The Legacy Garden{% endblock %}
+
+{% block content %}
+<style>
+/* ===== SETTINGS ===== */
+body { background-color: #F7F4EB; }
+
+/* same width as Profile page (Bootstrap container width) */
+.settings-container{
+  max-width: 1140px;   /* matches .container on large screens */
+}
+
+/* keep it responsive like Bootstrap */
+@media (max-width: 1200px){
+  .settings-container{ max-width: 960px; }
+}
+@media (max-width: 992px){
+  .settings-container{ max-width: 720px; }
+}
+@media (max-width: 768px){
+  .settings-container{ max-width: 540px; }
+}
+@media (max-width: 576px){
+  .settings-container{ max-width: 100%; }
+}
+
+
+/* ===== HEADER (BACK + TITLE) ===== */
+/* ===== HEADER (TITLE + BACK BELOW) ===== */
+.settings-header {
+    margin-bottom: 20px;
+}
+
+.settings-title {
+    color: #2e7d32;
+    font-weight: 800;
+    font-size: 2.2rem;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin-top: 0;        /* ensure no top margin */
+    margin-bottom: 6px;   /* tighter */
+}
+
+.back-btn {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.back-btn span {
+    font-size: 1.5rem;
+    margin-right: 6px;
+}
+
+.back-btn:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+/* aligns back button to left under title */
+.back-btn.below-title {
+    margin-left: 0;
+}
+
+/* ===== ACTION CARDS ===== */
+.action-card {
+    background: white;
+    padding: 20px 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    font-weight: 600;
+}
+
+.action-card-link {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.arrow-icon {
+    font-size: 30;
+    color: #888;
+}
+
+.action-card:hover {
+    background-color: #5D8A66 !important;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+.action-card:hover span,
+.action-card:hover i {
+    color: #ffffff !important;
+}
+
+/* ===== GROUPED SETTINGS ===== */
+.settings-group-card {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.group-title {
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #000;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 1.05rem;
+}
+
+/* ===== SWITCH ===== */
+.switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; width: 20px;
+    left: 4px; bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #5D8A66;
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* ===== SUPPORT ===== */
+.support-links li { margin-bottom: 12px; }
+
+.support-links a {
+    color: #2e7d32;          /* Legacy green */
+    text-decoration: none;   /* remove underline */
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.support-links a:hover {
+    text-decoration: underline;
+    color: #1b5e20;          /* darker green on hover */
+}
+
+
+
+
+/* ===== LOGOUT ===== */
+.logout-btn {
+    background-color: #A67C5D;
+    color: white;
+    border-radius: 15px;
+    padding: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    transition: background 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #8B654B;
+    color: white;
+}
+
+/* ===== PILL BACK BUTTON ===== */
+/* ===== BACK PILL (BASE) ===== */
+.back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    background-color: #DFF3E6; /* mint */
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.back-pill:hover {
+    transform: translateX(-3px);
+    text-decoration: none;
+}
+
+/* arrow */
+.back-pill.blue {
+    color: #1b5e20;
+}
+
+.back-pill.blue .arrow {
+    color: #1b5e20;
+}
+
+.back-pill.blue:hover {
+    background-color: #c8e6c9;
+}
+
+
+</style>
+
+<div class="settings-container container pt-3 pb-5">
+
+    <!-- HEADER -->
+    <div class="settings-header">
+        <h1 class="settings-title">Settings</h1>
+        <a href="{{ url_for('profile') }}" class="back-pill blue mb-3 d-inline-block">
+            <i class="fa-solid fa-arrow-left"></i> Back to Profile
+        </a>
+
+
+    </div>
+
+
+    <!-- ACTIONS -->
+    <a href="{{ url_for('story.manage') }}" class="action-card-link">
+        <div class="action-card mb-3 d-flex justify-content-between align-items-center">
+            <span>View / Manage stories</span>
+            <span class="arrow-icon">›</span>
+        </div>
+    </a>
+
+    <a href="{{ url_for('reset_password_settings') }}" class="action-card-link">
+        <div class="action-card mb-3 d-flex justify-content-between align-items-center">
+            <span>Change Password</span>
+            <span class="arrow-icon">›</span>
+        </div>
+    </a>
+
+    <a href="{{ url_for('change_email') }}" class="action-card-link">
+        <div class="action-card mb-3 d-flex justify-content-between align-items-center">
+            <span>Change Email</span>
+            <span class="arrow-icon">›</span>
+        </div>
+    </a>
+
+    <div class="action-card mb-4 d-flex justify-content-between align-items-center"
+         onclick="confirmDelete()" style="cursor:pointer;">
+        <span>Delete Account</span>
+        <span class="arrow-icon">›</span>
+    </div>
+
+    <!-- PRIVACY SETTINGS -->
+    <form method="POST" action="{{ url_for('settings') }}">
+        <div class="settings-group-card mb-4">
+            <h5 class="group-title">Privacy Settings</h5>
+
+            <div class="setting-item">
+                <span>Show/Hide Email</span>
+                <label class="switch">
+                    <input type="checkbox" name="show_email"
+                        {% if not settings['show_email'] %}checked{% endif %}
+                        onchange="updateSetting(this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span>Show/Hide Region</span>
+                <label class="switch">
+                    <input type="checkbox" name="show_region"
+                        {% if not settings['show_region'] %}checked{% endif %}
+                        onchange="updateSetting(this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </form>
+
+    <!-- SUPPORT -->
+    <div class="settings-group-card mb-5">
+        <h5 class="group-title">Support</h5>
+        <ul class="list-unstyled support-links">
+            <li><a href="{{ url_for('community_guidelines') }}">Community Guidelines</a></li>
+            <li><a href="{{ url_for('terms') }}">Terms & Privacy Policy</a></li>
+        </ul>
+    </div>
+
+    <!-- LOG OUT -->
+    <div class="text-center mb-5">
+        <a href="{{ url_for('logout') }}" class="btn logout-btn w-100">Log Out</a>
+    </div>
+</div>
+
+<form id="delete-form" action="{{ url_for('delete_account') }}" method="POST" style="display:none;"></form>
+
+<script>
+function confirmDelete() {
+    if (confirm("Are you sure you want to delete your account?")) {
+        document.getElementById('delete-form').submit();
+    }
+}
+</script>
+<script>
+function updateSetting(checkbox) {
+  fetch("{{ url_for('settings') }}", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `${checkbox.name}=${checkbox.checked ? 0 : 1}`
+  });
+}
+</script>
+
+{% endblock %}

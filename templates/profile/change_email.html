@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Change Email | The Legacy Garden{% endblock %}
+
+{% block content %}
+<style>
+  /* ===== 3. AUTH CARD (LOGIN & SIGNUP) ===== */
+.auth-card-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 700px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 50px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.auth-logo { width: 120px; }
+
+.auth-brand-name {
+    text-align: center;
+    color: var(--legacy-green);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-top: 6px;
+}
+
+.auth-title {
+    text-align: center;
+    font-weight: 700;
+    margin: 20px 0 30px;
+}
+
+/* Form Elements */
+.auth-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.auth-input {
+    width: 100%;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+}
+
+.auth-textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.auth-btn {
+    display: block;
+    margin: 24px auto 0;
+    background-color: var(--legacy-green);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    width: 220px;
+    font-weight: 700;
+}
+.auth-link-sm,
+.auth-links a {
+    color: var(--legacy-green);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.auth-link-sm:hover,
+.auth-links a:hover {
+    color: #2D5233; /* darker green */
+    text-decoration: underline;
+}
+</style>
+<div class="auth-card-wrap">
+  <div class="auth-card shadow">
+    <div class="auth-brand">
+      <img src="{{ url_for('static', filename='uploads/logo.jpeg') }}" class="auth-logo">
+      <div class="auth-brand-name">The Legacy<br>Garden</div>
+    </div>
+
+    <h2 class="auth-title">Change Email</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert alert-info" style="padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('change_email') }}" class="auth-form">
+      <div class="form-group">
+        <label class="auth-label">Current Password:</label>
+        <input class="auth-input" type="password" name="password" placeholder="Verify it's you" required>
+      </div>
+
+      <div class="form-group">
+        <label class="auth-label">New Email Address:</label>
+        <input class="auth-input" type="email" name="new_email" placeholder="Enter new email" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Update Email</button>
+      
+      <div class="auth-links text-center mt-3">
+        <a href="{{ url_for('settings') }}">Back to Settings</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

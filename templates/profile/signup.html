@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Sign Up | The Legacy Garden{% endblock %}
+
+{% block content %}
+<style>
+/* ===== AUTH PAGE BACKGROUND ===== */
+.auth-page {
+    background: url("{{ url_for('static', filename='uploads/bg.jpg') }}") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+/* ===== AUTH CARD ===== */
+.auth-card-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    min-height: calc(100vh - 160px); /* keeps footer at bottom */
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 700px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 50px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.auth-logo {
+    width: 120px;
+}
+
+.auth-title {
+    text-align: center;
+    font-weight: 700;
+    margin: 20px 0 30px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.auth-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.auth-input {
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0 12px;
+    margin-bottom: 16px;
+    font-size: 1rem;
+}
+
+.auth-textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: normal;
+    padding: 10px 12px;
+}
+
+/* ===== PASSWORD WITH EYE ===== */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .auth-input {
+    padding-right: 44px; /* space for eye */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 35%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+    font-size: 1.1rem;
+}
+
+.toggle-password:hover {
+    color: #333;
+}
+
+/* ===== BUTTON ===== */
+.auth-btn {
+    display: block;
+    margin: 24px auto 0;
+    background-color: var(--legacy-green);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    width: 220px;
+    font-weight: 700;
+}
+
+/* ===== LINKS ===== */
+.auth-links {
+    text-align: right;
+}
+
+.auth-links a {
+    color: var(--legacy-green);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+
+@media (max-width: 768px){
+  .auth-card-wrap{
+    min-height: auto !important;     /* stop forcing tall height */
+    padding: 20px 12px;
+  }
+
+  .auth-card{
+    max-width: 100%;
+    padding: 26px 18px;
+    border-radius: 16px;
+  }
+
+  .auth-logo{
+    width: 90px;
+  }
+
+  .auth-btn{
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .auth-links{
+    text-align: center;              /* nicer on mobile */
+    margin-top: 6px;
+  }
+}
+
+/* extra small phones */
+@media (max-width: 400px){
+  .auth-card{
+    padding: 22px 14px;
+  }
+}
+
+/* ===== REMOVE BROWSER DEFAULT PASSWORD EYE ===== */
+
+/* Chrome / Edge / Safari */
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-inner-spin-button {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Microsoft Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+
+</style>
+
+<div class="auth-card-wrap">
+  <div class="auth-card shadow">
+
+    <div class="auth-brand">
+      <img src="{{ url_for('static', filename='uploads/logo.jpeg') }}" class="auth-logo">
+    </div>
+
+    <h2 class="auth-title">Sign Up</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-info">
+          {% for msg in messages %}
+            <div>{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('signup') }}">
+
+      <label class="auth-label">Name:</label>
+      <input class="auth-input" name="name" required>
+
+      <label class="auth-label">Username:</label>
+      <input class="auth-input" name="username" required>
+
+      <label class="auth-label">Password:</label>
+      <div class="password-wrapper">
+        <input
+            class="auth-input"
+            type="password"
+            name="password"
+            id="password"
+            required
+            minlength="8"
+        >
+        <i class="fa-solid fa-eye toggle-password"
+           onclick="togglePassword('password', this)"></i>
+      </div>
+
+      <div style="font-size:0.85rem;color:#666;margin-top:-10px;margin-bottom:10px;">
+        Password must be at least 8 characters, include uppercase, lowercase, and a number.
+      </div>
+
+      <label class="auth-label">Profile Type:</label>
+      <select class="auth-input" name="role" required>
+        <option disabled selected>Youth / Senior</option>
+        <option value="Youth">Youth</option>
+        <option value="Senior">Senior</option>
+      </select>
+
+      <label class="auth-label">Region:</label>
+      <select class="auth-input" name="region" required>
+        <option disabled selected>Select region</option>
+        <option>North</option>
+        <option>South</option>
+        <option>East</option>
+        <option>West</option>
+        <option>Central</option>
+      </select>
+
+      <label class="auth-label">Email:</label>
+      <input class="auth-input" type="email" name="email" required>
+
+      <label class="auth-label">Add Bio:</label>
+      <textarea class="auth-input auth-textarea" name="bio"></textarea>
+
+      <div class="auth-links">
+        Have an account?
+        <a href="{{ url_for('login') }}">Log In</a>
+      </div>
+
+      <button type="submit" class="auth-btn">Sign Up</button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+}
+</script>
+
+{% endblock %}

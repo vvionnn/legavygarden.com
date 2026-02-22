@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile | The Legacy Garden{% endblock %}
+
+{% block content %}
+<style>
+    /* ===== EDIT PROFILE ===== */
+/* Card Container */
+.edit-card {
+    background: #ffffff;
+    border-radius: 30px; 
+    padding: 50px;
+    border: 1px solid #e0e0e0;
+}
+
+/* ===== LEGACY GARDEN HEADING STYLE ===== */
+.legacy-heading {
+    color: #2e7d32; /* same green */
+    font-weight: 800;
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+}
+
+
+/* --- CHANGED: Image is now static (no pointer, no scale) --- */
+.profile-pic-large {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #000; 
+    background-color: #e9f1ee;
+    display: block;
+    margin: 0 auto;
+}
+
+.profile-pic-wrapper img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover; /* This "crops" the image to the circle automatically */
+    border: 3px solid #f8f9fa;
+}
+
+/* --- NEW: Text-only trigger styling --- */
+.edit-text-trigger {
+    cursor: pointer; /* Only the text shows the hand cursor */
+    display: inline-block;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.edit-text-trigger:hover .edit-text {
+    color: #31513C !important; /* Changes to dark green on hover */
+    text-decoration: underline;
+}
+
+/* Form Styling */
+.custom-input {
+    border: 1px solid #666 !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+}
+
+.col-form-label {
+    font-size: 1.1rem;
+}
+
+/* Action Buttons */
+.btn-save {
+    background-color: #31513C !important;
+    color: white !important;
+    border-radius: 8px !important;
+    font-weight: 600;
+    padding: 10px 40px;
+    border: none;
+    transition: filter 0.2s;
+}
+
+.btn-save:hover {
+    filter: brightness(1.2);
+}
+
+</style>
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 legacy-heading">Edit Profile</h2>
+
+    <div class="edit-card shadow-sm">
+        <form action="{{ url_for('edit_profile') }}" method="POST" enctype="multipart/form-data">
+            <div class="row align-items-start">
+                
+                <div class="col-md-4 text-center mb-4">
+                    <div class="profile-pic-wrapper">
+                        {% if profile['profile_pic'] and profile['profile_pic'] != 'profile_pic.png' %}
+                        <img src="{{ url_for('static', filename='uploads/' + profile['profile_pic']) }}" id="preview" class="profile-pic-large">
+                        {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ profile['name'] or session['username'] }}&background=random&size=150" id="preview" class="profile-pic-large">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-2">
+                        <label for="file-upload" class="edit-text-trigger mr-2">
+                            <span class="edit-text text-muted" style="cursor: pointer;">Change Photo</span>
+                        </label>
+                        
+                        {% if profile['profile_pic'] and profile['profile_pic'] != 'profile_pic.png' %}
+                        <a href="javascript:void(0);" class="text-danger ml-2" style="font-size: 0.9rem;" onclick="confirmRemoval()">Remove</a>
+                        {% endif %}
+                    </div>
+                    <input id="file-upload" type="file" name="profile_image" style="display:none;" onchange="previewImage(event)">
+                </div>
+
+<form id="remove-photo-form" action="{{ url_for('remove_photo') }}" method="POST" style="display: none;"></form>
+
+                <div class="col-md-8">
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold">Name:</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="name" class="form-control custom-input" value="{{ profile['name'] }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold">Profile Type:</label>
+                        <div class="col-sm-9">
+                            <select name="role" class="form-control custom-input">
+                                <option value="Youth" {% if profile['role'] == 'Youth' %}selected{% endif %}>Youth</option>
+                                <option value="Senior" {% if profile['role'] == 'Senior' %}selected{% endif %}>Senior</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold">Region:</label>
+                        <div class="col-sm-9">
+                            <select name="region" class="form-control custom-input">
+                                <option value="North" {% if profile['region'] == 'North' %}selected{% endif %}>North</option>
+                                <option value="South" {% if profile['region'] == 'South' %}selected{% endif %}>South</option>
+                                <option value="East" {% if profile['region'] == 'East' %}selected{% endif %}>East</option>
+                                <option value="West" {% if profile['region'] == 'West' %}selected{% endif %}>West</option>
+                                <option value="Central" {% if profile['region'] == 'Central' %}selected{% endif %}>Central</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-3 col-form-label font-weight-bold">Bio:</label>
+                        <div class="col-sm-9">
+                            <textarea name="bio" class="form-control custom-input" rows="4">{{ profile['bio'] }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-4">
+                        <a href="{{ url_for('profile') }}" class="text-dark mr-4">Cancel</a>
+                        <button type="submit" class="btn btn-save px-5">Save edit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form id="remove-photo-form" action="{{ url_for('remove_photo') }}" method="POST" style="display: none;"></form>
+
+<script>
+function confirmRemoval() {
+    if (confirm("Are you sure you want to remove your profile photo?")) {
+        document.getElementById('remove-photo-form').submit();
+    }
+}
+</script>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+{% endblock %}
