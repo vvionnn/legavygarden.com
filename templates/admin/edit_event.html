@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Edit Event | The Legacy Garden{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* ===== Rounded Box (same as Admin Events) ===== */
+.rounded-box {
+    border-radius: 24px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+    background: white;
+}
+
+/* ===== Title ===== */
+.page-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #4F8A55;
+    margin-top: 40px;
+    margin-bottom: 35px;
+}
+
+/* ===== Form ===== */
+.event-form {
+    padding: 30px;
+}
+
+.event-form input,
+.event-form textarea,
+.event-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+}
+
+.event-form button {
+    background: var(--legacy-green);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.current-img {
+    width: 200px;
+    height: 130px;
+    border-radius: 16px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+</style>
+
+
+<!-- TITLE OUTSIDE -->
+<h2 class="page-title">Edit Event</h2>
+
+
+<div class="container py-4">
+
+    <div class="rounded-box event-form">
+
+        <form method="POST"
+              action="{{ url_for('edit_event', event_id=event.id) }}"
+              enctype="multipart/form-data">
+
+            <!-- TITLE -->
+            <input type="text"
+                   name="title"
+                   value="{{ event.title }}"
+                   required>
+
+            <!-- DATE -->
+            <input type="date"
+                   name="event_date"
+                   value="{{ event.event_date }}"
+                   required>
+
+            <!-- CURRENT IMAGE -->
+            <label><strong>Current Image:</strong></label><br>
+
+            {% if event.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + event.image_filename) }}"
+                     class="current-img">
+            {% else %}
+                <img src="{{ url_for('static', filename='uploads/default_event.png') }}"
+                     class="current-img">
+            {% endif %}
+
+            <!-- NEW IMAGE -->
+            <input type="file"
+                   name="image"
+                   accept="image/*">
+
+            <!-- SHORT DESCRIPTION -->
+            <textarea name="short_description"
+                      rows="3"
+                      required>{{ event.short_description }}</textarea>
+
+            <!-- FULL DESCRIPTION -->
+            <textarea name="full_description"
+                      rows="4"
+                      required>{{ event.full_description }}</textarea>
+
+            <!-- STATUS -->
+            <select name="status" required>
+                <option value="details"
+                    {% if event.status == "details" %}selected{% endif %}>
+                    Show Details Button
+                </option>
+
+                <option value="upcoming"
+                    {% if event.status == "upcoming" %}selected{% endif %}>
+                    Show Upcoming Badge
+                </option>
+            </select>
+
+            <button type="submit">Update Event</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
